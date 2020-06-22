@@ -1,0 +1,50 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>See all comments</h3>
+
+<h2>
+{% if status == "admin": %}
+	<h4 style="color:red;"> 
+    admin
+
+<form method="post">
+    <p>
+		
+       <input type="text" name="email" placeholder="email of user" required="required" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+</h4>
+{% elif status == "error": %}
+	<h4 style="color:red;"> 
+  An error has occured!
+   
+	</h4>
+{% elif status == "not_found": %}
+	<h4 style="color:red;"> 
+  User not found!
+   
+	</h4>
+{% elif status == "user": %}
+	<h4 style="color:red;"> 
+	  <p hidden >
+	  <input type="text" name="email" placeholder="email of user" required="required" />
+  </p>
+  Only admins can check all comments of a specific user. You can see your comments by pressing the button.
+    <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+	</h4>
+
+{% elif status == "none": %}
+<h4 style="color:red;">
+  Login to see all your comments!
+</h4>	
+{% endif %}
+
+</h2>
+

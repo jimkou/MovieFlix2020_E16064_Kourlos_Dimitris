@@ -1,0 +1,60 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Insert Movie</h3>
+
+<h2>
+{% if login == "admin": %}
+	
+
+
+<form method="post">
+    <p>
+		<input type="text" name="title" placeholder="Title" required="required" />
+       </p>
+       <p>
+		<input type="number" name="year" placeholder="Year"  min="1900" max="2021"/>
+       </p>
+       <p>
+		<input type="text" name="description" placeholder="Description"  />
+       </p>
+       <p>
+		<input type="text" name="actors" placeholder="Actors" required="required" />
+       </p>
+       <p>
+		<input type="number" name="rating" placeholder="Rating"  min="1" max="10"/>
+       </p>
+       <p>
+		<input type="text" name="comments" placeholder="Comments" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Insert</button>
+</form>
+
+{% if status == "success": %}
+<h4 style="color:green;">
+    Movie inserted successfully!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+    An error has occured!
+</h4>
+{% endif %}
+{% elif login == "user": %}
+<h4 style="color:red;">
+    Only administrators can insert a new movie!
+</h4>
+
+{% elif login == "none": %}
+<h4 style="color:red;">
+    You are not logged in!
+    Login as admin to insert a movie!
+</h4>
+{% endif %}
+</h2>
+
+

@@ -1,0 +1,70 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Update Movie</h3>
+
+
+<h2>
+{% if login == "admin": %}
+	
+
+
+<form method="post">
+    <p>
+		<input type="text" name="title_up" placeholder="title of movie for update"  required="required"/>
+       </p>
+       <p>
+		<input type="text" name="title" placeholder="title" " />
+       </p>
+       <p>
+		<input type="number" name="year" placeholder="year" min="1900" max="2021" />
+       </p>
+       <p>
+		<input type="text" name="description" placeholder="description" />
+       </p>
+       <p>
+		<input type="text" name="actors" placeholder="actors to insert" />
+    
+       </p>
+       <p>
+		<input type="text" name="actors_del" placeholder="actors to delete"/>
+       </p>
+       
+        <button type="submit" class="btn btn-primary btn-block btn-large">Update</button>
+</form>
+
+
+{% if status == "empty": %}
+<h4 style="color:red;">
+You must fill at least one field for update!
+</h4>
+{% elif status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found!
+</h4>
+{% elif status == "success": %}
+<h4 style="color:green;">
+Movie updated successfully!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% endif %}
+
+{% elif login == "user": %}
+<h4 style="color:red;">
+    Only Administrators can update movies!
+</h4>
+{% elif login == "none": %}
+<h4 style="color:red;">
+    Login to update a movie!
+</h4>
+{% endif %}
+</h2>
+</body>

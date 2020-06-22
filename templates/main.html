@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+  <h3>Menu</h3>
+  <body>
+{% if privs == "user": %}
+	<h4 style="color:red;"> 
+	You are user
+	</h4>
+
+        
+{% elif privs == "admin": %}
+	<h4 style="color:red;"> 
+    You are admin
+	</h4>
+{% endif %}
+
+</body>
+  </body>
+</html>

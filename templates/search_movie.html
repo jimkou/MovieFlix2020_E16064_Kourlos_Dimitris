@@ -1,0 +1,50 @@
+
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Search Movie</h3>
+
+<h2>
+  {% if login != "none": %}
+<form method="post">
+    <p>
+       <input type="text" name="title" placeholder="Title"  />
+       </p>
+        <p>
+       <input type="text" name="year" placeholder="year"  />
+       </p>
+       
+    <p>
+    <input type="text" name="actor" placeholder="actor"  /> 
+    </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+{% elif login == "none": %}
+<h4 style="color:red;">
+Login to search movies
+</h4>
+
+{% endif %}
+
+</h2>
+<body>
+{% if status == "error": %}
+	<h4 style="color:red;"> 
+	An error has occured. Try again!
+	</h4>
+{% elif status == "empty_fields": %}
+	<h4 style="color:red;"> 
+	You must fill at least one field!
+	</h4>
+{% elif status == "empty_output": %}
+	<h4 style="color:red;"> 
+	No movies found!
+	</h4>
+{% endif %}
+
+</body>

@@ -1,0 +1,35 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Movie Information</h3>
+
+{% if login != "none": %}
+<h2>
+<form method="post">
+   <p>
+		<input type="text" name="title" placeholder="movie title" required="required" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+
+{% elif login == "none": %}
+<h4 style="color:red;">
+You must login to comment a movie!
+</h4>
+{% endif %}
+<h2>
+{% if status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found!
+</h4>
+{% elif status == "not_logged_in": %}
+<h4 style="color:red;">
+You must login to comment a movie!
+</h4>
+{% endif %}
+</h2>

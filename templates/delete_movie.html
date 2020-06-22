@@ -1,0 +1,47 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Delete Movie</h3>
+
+<h2>
+{% if login == "admin": %}
+<form method="post">
+    <p>
+		<input type="text" name="title" placeholder="Title" required="required" />
+       </p>
+       <button type="submit" class="btn btn-primary btn-block btn-large">Delete</button>
+</form>
+
+{% if status == "success": %}
+<h4 style="color:green;">
+Movie deleted succefully!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% elif status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found!
+</h4>
+{% endif %}
+{% elif login == "user": %}
+
+<h4 style="color:red;">
+    Only administrators can delete movies!
+</h4>
+
+{% elif login == "none": %}
+
+<h4 style="color:red;">
+    You are not logged in!
+    Login as administrator to delete a movie!
+</h4>
+{% endif %}
+</h2>
+</body>

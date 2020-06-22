@@ -1,0 +1,42 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Comment a Movie</h3>
+
+{% if login != "none": %}
+<h2>
+<form method="post">
+   <p>
+		<input type="text" name="title" placeholder="movie title" required="required" />
+       </p>
+       <p>
+		<input type="text"  name="comment" placeholder="movie comment" required="required" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Comment</button>
+</form>
+{% elif login == "none": %}
+<h4 style="color:red;">
+You must login to comment a movie!
+</h4>
+{% endif %}
+{% if status == "success": %}
+<h4 style="color:green;">
+Movie commented succefully!
+</h4>
+{% elif status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!!
+</h4>
+{% endif %}
+</h2>
+</body>
+

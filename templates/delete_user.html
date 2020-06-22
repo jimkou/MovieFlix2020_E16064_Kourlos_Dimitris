@@ -1,0 +1,52 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Delete User</h3>
+
+<h2>
+{% if login == "admin": %}
+<form method="post">
+    <p>
+		<input type="text" name="email" placeholder="email of user" required="required" />
+       </p>
+</form>
+{% elif login == "user": %}
+<h4 style="color:red;">Only admin can delete users!</h4>
+{% elif login == "none": %}
+<h4 style="color:red;">You must login to delete users!</h4>
+
+{% endif %}
+</h2>
+
+<h2>
+{% if status == "success": %}
+<h4 style="color:green;">
+User deleted successfully!!
+</h4>
+{% elif status == "user_not_found": %}
+
+<h4 style="color:red;">
+User not found!!
+</h4>
+
+{% elif status == "cant_del_admin": %}
+<h4 style="color:red;">
+You cant delete an administrator!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% elif status == "not_admin": %}
+<h4 style="color:red;">
+You are not administrator!!
+</h4>
+{% endif %}
+
+</h2>
+</body>

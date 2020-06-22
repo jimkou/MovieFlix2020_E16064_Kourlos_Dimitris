@@ -1,0 +1,59 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>Delete Rating</h3>
+
+<h2>
+{% if login == "admin": %}
+	
+
+
+<form method="post">
+    <p>
+		<input type="text" name="user" placeholder="email of user" required="required" />
+       </p>
+       <p>
+		<input type="text" name="title" placeholder="movie title" required="required" />
+       </p>
+       
+        <button type="submit" class="btn btn-primary btn-block btn-large">Delete</button>
+</form>
+
+
+{% elif login == "user": %}
+
+<form method="post">
+        <p>
+		<input type="text" name="title" placeholder="movie title" required="required" />
+       </p>
+       
+        <button type="submit" class="btn btn-primary btn-block btn-large">Delete</button>
+</form>
+{% elif login == "none": %}
+
+<h4 style="color:red;">You must login to delete rating!</h4>
+{% endif %}
+
+</h2 >
+<h2>
+{% if status == "rating_not_found": %}
+
+<h4 style="color:red;">
+Rating not found!
+</h4>
+
+{% elif status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found
+</h4>
+{% elif status == "success": %}
+<h4 style="color:green;">
+Movie comment deleted successfully!
+</h4>
+{% endif %}
+</h2>

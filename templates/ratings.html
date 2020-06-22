@@ -1,0 +1,45 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+<h3>See User Ratings</h3>
+
+
+<h2>
+{% if login == "admin": %}
+<form method="post">
+    <p>
+       <input type="text" name="user_email" placeholder="User Email" required="required" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+
+{% if status == "error": %}
+<h4 style="color:red;">
+An error has occured
+</h4>
+{% elif status == "not_found": %}
+<h4 style="color:red;">
+User not found!
+</h4>
+{% endif %}
+{% elif login == "none": %}
+<h4 style="color:red;">
+Please login to see all your ratings!
+</h4>
+
+{% elif login == "user": %}
+<form method="post">
+    <p>
+       <input type="text" name="user_email" placeholder="User Email" required="required" />
+       </p>
+       Press OK to see your ratings
+        <button type="submit" class="btn btn-primary btn-block btn-large">OK</button>
+</form>
+{% endif %}
+</h2>
+</body>
