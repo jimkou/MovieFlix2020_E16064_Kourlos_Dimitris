@@ -128,49 +128,68 @@ def search_movie_post():
 #Compare every actor in list with given actor name. Can find movie even with name or surname of actor, individually.
 def actors_search(actors , actor):
     counter = 0
+    actor_word = actor.split(" ")
     for item in actors:
         item_split = item.split(" ")
         for i in item_split:
-            if actor.casefold() ==  i.casefold():
-                counter = 1
+            for j in actor_word:
+              if j.casefold() ==  i.casefold():
+                  counter = 1
     if counter == 1:
             return True
     else:
         return False
+
+def movie_search(movie , title):
+    movie_split = movie.split(" ")
+    title_split = title.split(" ")
+    counter = 0
+
+    for word in movie_split:
+        for title_word in title_split:
+            if word.casefold() == title_word.casefold():
+                counter = 1
+    if counter == 0:
+        return False
+    else:
+        return True
 
 #Search movies based on how many inputs filled by user.
 def movie_choose(title,year,actor,iterable):
     output = []
     for movie in iterable:
         if title != "" and actor != "" and year != "":
-                condition = actors_search(movie['actors'],actor)
-                if title.casefold() == movie['title'].casefold()  and movie['year'] == year and condition:
+                condition_actor = actors_search(movie['actors'],actor)
+                condition_movie = movie_search(movie['title'] , title)
+                if condition_movie  and movie['year'] == year and condition_actor:
                     if movie not in output:
                         output.append(movie)
         
         elif title != "" and actor != "" and year == "":
-             condition = actors_search(movie['actors'],actor)
-             if title.casefold() == movie['title'].casefold()   and condition :
+             condition_actor = actors_search(movie['actors'],actor)
+             condition_movie = movie_search(movie['title'] , title)
+             if condition_movie  and condition_actor :
                     if movie not in output:
                         output.append(movie)
         elif title != "" and actor == "" and year != "":
-            
-            if title.casefold() == movie['title'].casefold()  and movie['year'] == year:
+            condition_movie = movie_search(movie['title'] , title)
+            if condition_movie   and movie['year'] == year:
                     if movie not in output:
                         output.append(movie)
         elif title != "" and actor == "" and year == "":
-            if title.casefold() == movie['title'].casefold()  :
+            condition_movie = movie_search(movie['title'] , title)
+            if condition_movie  :
                 if movie not in output:
                         output.append(movie)
         
         elif title == "" and actor != "" and year != "":
-            condition = actors_search(movie['actors'],actor)
-            if movie['year']==year and  condition :
+            condition_actor = actors_search(movie['actors'],actor)
+            if movie['year']==year and  condition_actor :
                 if movie not in output:
                         output.append(movie)
         elif title == "" and actor != "" and year == "":
-            condition = actors_search(movie['actors'],actor)
-            if condition :
+            condition_actor = actors_search(movie['actors'],actor)
+            if condition_actor :
                 if movie not in output:
                         output.append(movie)
         elif title == "" and actor == "" and year != "":
@@ -215,12 +234,17 @@ def movie_info_post():
         counter = 0
         try:
             moviez = movies.find({})
-
+            title_split = title.split(" ")
             for movie in moviez:
-                if movie['title'].casefold() == title.casefold():
-                    movie['_id'] = ""
-                    output.append(str(movie))
-                    counter = 1
+                movie_split = movie['title'].split(" ")
+                for i in movie_split:
+                    for j in title_split:
+
+                        if i.casefold() == j.casefold():
+                            movie['_id'] = ""
+                            if movie not in output:
+                                output.append(str(movie))
+                            counter = 1
             if counter == 0:
                 return render_template('movie_info.html',status="movie_not_found")
             else:
