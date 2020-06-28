@@ -9,7 +9,7 @@ $ git clone https://github.com/jimkou/MovieFlix2020_E16064_Kourlos_Dimitris.git
 $ cd MovieFlix2020_E16064_Kourlos_Dimitris
 $ sudo docker-compose up
 ```
-####IMPORTANT NOTES:
+#### IMPORTANT NOTES:
 > The application works only with 1 loggin session. So it handles only one user at the time with the variebles login_name and login_email.
 
 #### OPERATIONS
