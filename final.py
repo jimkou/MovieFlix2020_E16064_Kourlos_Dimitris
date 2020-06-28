@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, redirect, Response , render_template
 import json
 
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://db:27017/')
 
 
 db = client['MovieFlix']
