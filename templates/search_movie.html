@@ -1,5 +1,15 @@
 
 <body style="background-color:silver;text-align:center;">
+
+<style>
+div.one {
+  
+  text-align: left;  
+  border-style: solid;
+  background-color: #ff9999;
+ 
+}
+</style>
    <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
   color: white;
   padding: 14px 25px;
@@ -8,6 +18,30 @@
   display: inline-block;">MovieFLIX
 
 <h3>Search Movie</h3>
+{% if status == "movie_found": %}
+
+{% for movie in output %}
+<div class="one">
+    <p> Title: {{ movie.title }} </p>
+    <p> Year: {{ movie.year }} </p>
+    <p> Description: {{ movie.description }} </p>
+    <p> Actors: {% for i in movie.actors %}
+    {{i}} ,
+    {% endfor %}</p>
+    <p> <p4>Comments</p4>:{% for i in movie.comments %}
+    {{i}} , 
+    {% endfor %}
+    </p>
+   <p> <p1>Ratings</p1>: {% for i in movie.rating %}
+    {{i}} , 
+    {% endfor %}
+    </p>
+
+</div>
+{% endfor %}
+
+{% else %}
+
 
 <h2>
   {% if login != "none": %}
@@ -16,7 +50,7 @@
        <input type="text" name="title" placeholder="Title"  />
        </p>
         <p>
-       <input type="text" name="year" placeholder="year"  />
+       <input type="number" name="year" placeholder="year"  min="1900" max="2021"/>
        </p>
        
     <p>
@@ -28,7 +62,10 @@
 <h4 style="color:red;">
 Login to search movies
 </h4>
-
+	</h4>
+    <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 
 </h2>
@@ -46,5 +83,5 @@ Login to search movies
 	No movies found!
 	</h4>
 {% endif %}
-
+{% endif %}
 </body>

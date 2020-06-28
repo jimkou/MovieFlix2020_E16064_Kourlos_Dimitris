@@ -1,4 +1,13 @@
 <body style="background-color:silver;text-align:center;">
+<style>
+div.one {
+  
+  text-align: left;  
+  border-style: solid;
+  background-color: #ff9999;
+ 
+}
+</style>
    <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
   color: white;
   padding: 14px 25px;
@@ -8,6 +17,23 @@
 
 <h3>See User Ratings</h3>
 
+{% if status == "ratings_found": %}
+<h4>
+User : {{user}}
+</h4>
+
+<div class="one">
+Ratings
+</div>
+
+{% for i in output %}
+<div class="one">
+<p> {{i}}
+    </p>
+    </div>
+{% endfor %}
+
+{% else %}
 
 <h2>
 {% if login == "admin": %}
@@ -18,20 +44,13 @@
         <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
 </form>
 
-{% if status == "error": %}
-<h4 style="color:red;">
-An error has occured
-</h4>
-{% elif status == "not_found": %}
-<h4 style="color:red;">
-User not found!
-</h4>
-{% endif %}
 {% elif login == "none": %}
 <h4 style="color:red;">
 Please login to see all your ratings!
 </h4>
-
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% elif login == "user": %}
 <form method="post">
     <p>
@@ -41,5 +60,20 @@ Please login to see all your ratings!
         <button type="submit" class="btn btn-primary btn-block btn-large">OK</button>
 </form>
 {% endif %}
+
+{% if status == "error": %}
+<h4 style="color:red;">
+An error has occured
+</h4>
+{% elif status == "not_found": %}
+<h4 style="color:red;">
+User not found!
+</h4>
+{% elif status == "ratings_not_found": %}
+<h4 style="color:red;">
+Ratings not found!
+</h4>
+{% endif %}
 </h2>
+{% endif %}
 </body>

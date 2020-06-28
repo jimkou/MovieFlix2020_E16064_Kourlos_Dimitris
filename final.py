@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, redirect, Response , render_template
 import json
 
 
-client = MongoClient('mongodb://db:27017/')
+client = MongoClient('mongodb://localhost:27017/')
 
 
 db = client['MovieFlix']
@@ -15,13 +15,25 @@ login_email = "none"
 login_name = "none"
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static' )
 
 
+
+@app.route('/')
+def main_route():
+    global login_name
+    return render_template('/main.html', login = login_name , login_email = login_email)
+
+@app.route('/', methods=['POST'])
+def main_route_post():
+    return "yo"
 #REGISTER 
+
+
+
 @app.route('/user_register')
 def user_register():
-    return render_template('register.html')
+    return render_template('register.html',login = login_name)
 
 @app.route('/user_register', methods=['POST'])
 def user_register_post():
@@ -42,12 +54,23 @@ def user_register_post():
     if users.find({"email":email}).count()==0:
         user = {"email": email, "name": name,  "password": password, "comments": comments, "rating":rating, "category":category}
         users.insert(user)
-        login_name = "none"
-        login_email = "none"
+        if login_name == "user" or login_name == "none":
+            login_name = "none"
+            login_email = "none"
+        if login_name == "admin":
+            return redirect("/")
         return render_template('register.html',status="registered")
     else:
         return render_template('register.html',status="email_exists")
-        
+
+
+@app.route('/user_logout')
+def user_logout():
+    global login_name
+    global login_email
+    login_name = "none"
+    login_email = "none"   
+    return redirect("/")     
 #LOGIN 
 @app.route('/user_login')
 def user_login():
@@ -86,7 +109,7 @@ def user_login_post():
                     
                     login_email = email
                     login_status = "none"
-                    return render_template('main.html',privs=login_name)
+                    return redirect("/")
                 
             else:
                     
@@ -123,7 +146,7 @@ def search_movie_post():
         return render_template('search_movie.html',status="empty_output")
     
         
-    return jsonify(output)
+    return render_template('search_movie.html',status="movie_found" , output = output)
 
 #Compare every actor in list with given actor name. Can find movie even with name or surname of actor, individually.
 def actors_search(actors , actor):
@@ -217,19 +240,7 @@ def movie_info_post():
             return render_template('movie_info.html',status="error")
         if title == "":
             return render_template('movie_info.html',status="empty_fields")
-        """
-        
-        if movies.find({"title":title}).count() == 0:
-            return render_template('movie_info.html',status="movie_not_found")
-        else:
-            
-            output.append("Movie information for :"+title)
-            moviez = movies.find({})
-            for movie in moviez:
-                if movie['title'] == title:
-                    movie['_id'] = ""
-                    output.append(str(movie))
-           """
+       
 #ADDED: NO CASE SENSITIVE SEARCH, same results on lower and uppercase searches.
         counter = 0
         try:
@@ -243,12 +254,14 @@ def movie_info_post():
                         if i.casefold() == j.casefold():
                             movie['_id'] = ""
                             if movie not in output:
-                                output.append(str(movie))
+                                movie = {"title":movie['title'],"description":movie['description'],"year":movie['year'],"actors":movie['actors']}
+                                output.append(movie)
                             counter = 1
             if counter == 0:
                 return render_template('movie_info.html',status="movie_not_found")
             else:
-                return jsonify(output)
+                return render_template('movie_info.html',status="movie_found" , output = output)
+                #return jsonify(output)
         
         except Exception as e:
             render_template('movie_info.html',status="error")
@@ -273,11 +286,14 @@ def ratings():
                 return render_template('ratings.html',status="not_found")
         else:
             user = users.find_one({"email":login_email})
-            output.append("These are all the ratings from : "+login_email)
+            
             for i in user['rating']:
                output.append(i)
             
-            return jsonify(output)
+            if len(output) == 0 :
+                 return render_template('ratings.html',status = "ratings_not_found" )
+            
+            return render_template('ratings.html',status = "ratings_found" , output = output , user = login_email)
     else:
        return render_template('ratings.html',login ="none")
 
@@ -300,11 +316,48 @@ def ratings_post():
         else:
             
             user = users.find_one({"email":user_email})
-            output.append("These are all the ratings from : "+user_email)
+            
             for i in user['rating']:
                output.append(i)
             
-            return jsonify(output)
+            if len(output) == 0 :
+                 return render_template('ratings.html',status = "ratings_not_found" )
+            
+            return render_template('ratings.html',status = "ratings_found" , output = output , user = user_email)
+
+
+@app.route('/comments_many')
+def comments_many():
+
+    return render_template('comments_many.html', login = login_name)
+
+@app.route('/comments_many', methods=['POST'])
+def comments_many_post():
+    output = []
+    try:
+        title = request.form['title']
+        year = request.form['year']
+    except Exception as e:
+         return render_template('comments_many.html',status='error')
+
+    if title == "" or year == "":
+        return "Please type a movie."
+    
+    moviez = movies.find({})    
+    counter  = 0
+    for movie in moviez:
+        if title.casefold() == movie['title'].casefold() and movie['year'] == year:
+           counter = 1
+           for i in movie['comments']:
+                output.append(i)
+    
+    if counter  == 0:
+        return  render_template('comments_many.html',status="movie_not_found")
+    if len(output) == 0:
+        return  render_template('comments_many.html',status="comments_not_found")
+
+    return  render_template('comments_many.html',status="comments_found",output = output , title = title , year = str(year))
+            
 
 @app.route('/comments')
 def comments():
@@ -316,39 +369,53 @@ def comments_post():
     
     try:
         title = request.form['title']
+      
     except Exception as e:
          return render_template('comments.html',status='error')
          
     if title == "":
         return "Please type a movie."
-         
-    if movies.find({"title":title}).count()==0:
-            return render_template('comments.html',status="not_found")
-    else:
-        movie = movies.find_one({"title":title})
-        output.append("THESE ARE COMMENTS FOR THE MOVIE: "+title)
-        for i in movie['comments']:
-           output.append(i)
+    
+    moviez = movies.find({})    
+    counter  = 0
+    for movie in moviez:
+        if title.casefold() == movie['title'].casefold():
+           counter  = counter + 1 
+           for i in movie['comments']:
+                output.append(i)
+            
+    if counter >= 2:
+           return redirect("http://localhost:5000/comments_many")  
+    
+  
+            
+    
         
-        return jsonify(output)
+        
+    if len(output) == 0:
+        return  render_template('comments.html',status="comments_not_found")
+
+    return  render_template('comments.html',status="comments_found",output = output , title = title)
         
 @app.route('/all_comments')
 def all_comments():
-    if users.find({"email":login_email,"category":"admin"}).count() >= 1:
-        return render_template('all_comments.html',status="admin")
-    elif  users.find({"email":login_email , "category":"user"}).count() >= 1:
-        if users.find({"email":login_email}).count() == 0:
-            return render_template('all_comments.html',status="error")
-        else:
+    if login_name == 'user':
             output = []
             user = users.find_one({"email":login_email})
             
             for i in user['comments']:
                 output.append(i)
-                
-        return jsonify(output)
+            if len(output) == 0:
+                return render_template('all_comments.html',status="comments_not_found")
+            
+            
+            return render_template('all_comments.html',status="comments_found" , output = output , user = login_email)
+
+    elif login_name == "admin":
+        return render_template('all_comments.html',status="admin")
     else:
         return render_template('all_comments.html',status="none")
+
         
 
         
@@ -357,7 +424,7 @@ def all_comments():
 @app.route('/all_comments', methods=['POST'])
 def all_comments_post():
     output = []
-    if users.find({"email":login_email,"category":"admin"}).count() >= 1:
+    if login_name == 'admin':
         try:
             email = request.form['email']
         except Exception as e:
@@ -368,11 +435,16 @@ def all_comments_post():
         else:
             user = users.find_one({"email":email})
             
-            output.append("These are the comments from user:"+email)
+            
             for i in user["comments"]:
                 output.append(i)
-            return jsonify(output)
-    elif users.find({"email":login_email,"category":"user"}).count() >= 1:
+
+            if len(output) == 0:
+                return render_template('all_comments.html',status="comments_not_found")
+
+            return render_template('all_comments.html',status="comments_found" ,output = output , user = login_email)
+
+    elif login_name == 'user':
         if users.find({"email":login_email}).count() == 0:
             return render_template('all_comments.html',status="error")
         else:
@@ -380,9 +452,14 @@ def all_comments_post():
             
             for i in user['comments']:
                 output.append(i)
-                
-        return jsonify(output)
-        
+            if len(output) == 0:
+                return render_template('all_comments.html',status="comments_not_found")
+
+        return render_template('all_comments.html',status="comments_found" ,output = output , user = login_email)
+    else:
+        return render_template('all_comments.html',status="none")
+
+
 
 @app.route('/delete_rating')
 def delete_rating():
@@ -510,7 +587,91 @@ def delete_rating_post():
     else:
         return "Login to delete your comments!"
 
-    
+@app.route('/rate_movie_many')
+def rate_movie_many():
+    return render_template('rate_movie_many.html' , login = login_name , status = "type_year")    
+
+@app.route('/rate_movie_many', methods=['POST'])
+def rate_movie_many_post():
+    global login_name
+    global login_email
+
+    if login_name != 'none':
+        try:
+            
+            title = request.form['title']
+            year = request.form['year']
+            year = str(year)
+            rating = request.form['rating']
+            rating =str(rating)
+
+        except Exception as e:
+              return render_template('rate_movie_many.html', status = "error")
+        
+        if movies.find({"title":title}).count() == 0:
+            return render_template('rate_movie_many.html',status = "movie_not_found")
+        else:
+         
+            try:  
+                    #GOES ON MOVIE
+                    new_rating = login_email+":"+rating
+                    
+                    #GOES ON USER
+                    new_rating_user = title+":"+rating
+                    
+                    ratings_list = []
+                    ratings_list_user = []
+                    
+                    movie = movies.find_one({"title":title , "year":year})
+                    user = users.find_one({"email":login_email})
+                    
+                    for i in movie['rating']:
+                        ratings_list.append(i)
+                    for i in user['rating']:
+                        ratings_list_user.append(i)
+                    
+                    rating_counter = 0
+                    
+                    if len(ratings_list) > 0:
+                        for i in  ratings_list:
+                            
+                            if login_email  in i:
+                                rating_counter = rating_counter + 1
+                                
+                        
+                                
+                    if rating_counter == 0:
+                        ratings_list.append(new_rating)
+                    else:
+                        return render_template('rate_movie_many.html',status = "already_rated")
+                        
+                   
+                         
+                         
+                    if len(ratings_list_user) > 0:
+                            if title+":"+str(rating) not in ratings_list_user:
+                                
+                                ratings_list_user.append(new_rating_user)
+                    else:
+                        ratings_list_user.append(new_rating_user)
+                    
+                        
+                    
+                    movie = movies.update_one({"title":title, "year":year}, 
+                        {"$set":
+                                {"rating":ratings_list}})
+                    user = users.update_one({"email":login_email},
+                        {"$set":
+                                {"rating":ratings_list_user}})
+                    
+                    return render_template('rate_movie_many.html',status = "success")
+            except Exception as e:
+                    
+                    return render_template('rate_movie_many.html',status = "error")
+    else:
+        return render_template('rate_movie_many.html',status = "error")
+
+
 @app.route('/rate_movie')
 def rate_movie():
     return render_template('rate_movie.html' , login = login_name)
@@ -525,6 +686,7 @@ def rate_movie_post():
             rating = request.form['rating']
             rating =str(rating)
         except Exception as e:
+             
              return render_template('rate_movie.html', status = "error")
              
         if title == "" or rating == "":
@@ -532,7 +694,12 @@ def rate_movie_post():
             
         if movies.find({"title":title}).count() == 0:
             return render_template('rate_movie.html',status = "movie_not_found")
+        
+        elif movies.find({"title":title}).count() >= 2:
+            return redirect('/rate_movie_many')
         else:
+
+
             try:  
                     #GOES ON MOVIE
                     new_rating = login_email+":"+rating
@@ -570,14 +737,14 @@ def rate_movie_post():
                          
                          
                     if len(ratings_list_user) > 0:
-                        for i in ratings_list_user:
-                            if title not in i:
+                            if title+":"+str(rating) not in ratings_list_user:
+                                
                                 ratings_list_user.append(new_rating_user)
                     else:
                         ratings_list_user.append(new_rating_user)
                     
                         
-                        
+                    
                     movie = movies.update_one({"title":title}, 
                         {"$set":
                                 {"rating":ratings_list}})
@@ -587,6 +754,7 @@ def rate_movie_post():
                     
                     return render_template('rate_movie.html',status = "success")
             except Exception as e:
+                    
                     return render_template('rate_movie.html',status = "error")
     else:
         return render_template('rate_movie.html',status = "login")
@@ -681,6 +849,16 @@ def insert_movie_post():
             rating_list.append(login_email+":"+rating)
         actors = actors.split(",")
         
+        moviez = movies.find({})
+        
+        counter = 0
+        for movie in moviez:
+            if movie['title'] == title and movie['year'] == year:
+                counter = 1
+        
+        if counter == 1:
+            return render_template('insert_movie.html',login = login_name,status= "movie_exists")
+
         movie = {"title":title,"year":year,"description":description,"actors":actors,"rating":rating_list , "comments":comments_list}
         movies.insert(movie)
         return render_template('insert_movie.html',login = login_name,status= "success")
@@ -717,7 +895,7 @@ def delete_movie_post():
        else:
             movies.delete_one({"title":title})
             return render_template('delete_movie.html' , login = login_name , status = "success")
-            
+        
 @app.route('/upgrade_user')
 def upgrade_user():
     return render_template('upgrade_user.html' ,login = login_name)
@@ -747,19 +925,6 @@ def delete_user_comments(user_email):
                 comments_list_users = []
                 movie_list = movies.find({})
                 
-                """
-                string = user_email 
-                counter_del = 0 
-                for i in movie['comments']:
-                    if string != i:
-                            comments_list.append(i)
-                            
-                    else:
-                        counter_del = counter_del + 1
-                """
-                #if counter_del == 0:
-                   # return render_template('delete_comment.html',login = login_name , status="comment_not_found")
-
               
                 try: 
                     for movie in movie_list:
@@ -781,7 +946,7 @@ def delete_user_comments(user_email):
                                                     }})
                                 
                             else:
-                                print("lol")
+                                print(1)
                 except Exception as e:
                     return "error"
 
@@ -811,7 +976,7 @@ def delete_user_ratings(user_email):
                                                     }})
                                 
                             else:
-                                print("lol")
+                                print(1)
                 except Exception as e:
                     return "error"
 @app.route('/delete_user')
@@ -820,8 +985,9 @@ def delete_user():
 
 @app.route('/delete_user', methods=['POST'])
 def delete_user_post():
-    
-    if users.find({"email":login_email,"category":"admin"}).count() >= 1:
+    global login_name
+    global login_email
+    if login_name == 'admin':
         try:
                 email = request.form['email']
         except Exception as e:
@@ -832,7 +998,7 @@ def delete_user_post():
                 if users.find({"email":email}).count() == 0:
                     return render_template('delete_user.html',login = login_name , status = "user_not_found")
                 else:
-                    if users.find({"email":email,"category":"user"}).count() == 0:
+                    if users.find({"email":email,"category":"user"}).count() == 0 and email != login_email:
                         return render_template('delete_user.html',login = login_name , status = "cant_del_admin")
                     else:
                         try:
@@ -842,8 +1008,29 @@ def delete_user_post():
                             return render_template('delete_user.html',login = login_name , status = "success")
                         except Exception as e :
                             return render_template('delete_user.html',login = login_name , status = "error")
+    elif login_name == 'user':
+       
+        try:
+            response = request.form['response']
+        except Exception as e:
+            return render_template('delete_user.html',login = login_name , status = "error")
+        string = "yes"
+        
+        if response.casefold() == string.casefold():
+            try:
+                users.delete_one({"email":login_email})
+                delete_user_comments(login_email)
+                delete_user_ratings(login_email)
+                login_email = 'none'
+                login_name = 'none'
+                return render_template('delete_user.html',login = login_name , status = "deleted")
+            except Exception as e:
+                return render_template('delete_user.html',login = login_name , status = "error")
+        else:
+            return render_template('delete_user.html',login = login_name)
     else:
         return render_template('delete_user.html',login = login_name, status = "not_admin")
+    
         
         
     
@@ -892,10 +1079,7 @@ def update_movie_post():
                     for i in movie1['actors']:
                         if i != actors_del and i not in actors_list:
                             actors_list.append(i)
-                
-                
-                    
-                    
+            
                 try: 
                     
                     movie = movies.update_one({"title":title_up}, 
@@ -905,14 +1089,124 @@ def update_movie_post():
                                  "description":description,
                                  "actors":actors_list
                                     }})
+                    
+                    if title != title_up:
+
+                        comments_after_update(title , title_up)
+                        ratings_after_update(title , title_up)
+                        
                     return render_template('update_movie.html',login = login_name , status = "success")
                 except Exception as e:
                     return render_template('update_movie.html',login = login_name , status = "error")
     else:
          return "Only admin can update movies"
     
+def ratings_after_update(title , title_up):
+                
+                   
+
+                #new_comment_user = title+":"+comment
+                        
+                        ratings_list = []
+                        ratings_list_user = []
+                        users_list = []
+                        movie = movies.find_one({"title":title})
+                        #user = users.find_one({"email":login_email})
+                        counter = 0
+                        
+                        for i in movie['rating']:
+                            ratings_list.append(i)
+                       
+                        
+                        for i in ratings_list:
+                            rating = i.split(":")
+                            if rating[0] not in users_list:
+                                users_list.append(rating[0])
+                                
+
+                        
+                        
+                        for user1 in users_list:
+                            ratings_list_user = []
+
+                            user2 = users.find_one({"email":user1})
+                            
+                            for rating in user2['rating']:
+                                
+                                a_rating = rating.split(":")
+                                movie_name = a_rating[0]
+                                
+
+                                
+                                if movie_name ==   title_up:
+                                    movie_name = title
+                                    
+                                    new_rating_user = movie_name +":"+a_rating[1]
+                                    old_rating_user = title_up+":"+a_rating[1]
+
+                                    if old_rating_user in ratings_list_user:
+                                        ratings_list_user.pop(old_rating_user)
+
+                                    if new_rating_user not in ratings_list_user:
+                                        ratings_list_user.append(new_rating_user)
+
+                            user = users.update_one({"email":user1},
+                            {"$set":
+                                    {"rating":ratings_list_user}})
+    
+
+def comments_after_update(title , title_up):
 
 
+                    if title != title_up:
+                   
+
+                        #new_comment_user = title+":"+comment
+                        
+                        comments_list = []
+                        comments_list_user = []
+                        users_list = []
+                        movie = movies.find_one({"title":title})
+                        #user = users.find_one({"email":login_email})
+                        
+                        for i in movie['comments']:
+                            comments_list.append(i)
+                       
+                        
+                        for i in comments_list:
+                            comment = i.split(":")
+                            if comment[0] not in users_list:
+                                users_list.append(comment[0])
+                                
+
+                        
+                        
+                        for user1 in users_list:
+                            comments_list_user = []
+                            user2 = users.find_one({"email":user1})
+                            
+                            for comment in user2['comments']:
+                                
+                                a_comment = comment.split(":")
+                                movie_name = a_comment[0]
+                                
+
+                                
+                                    
+                                movie_name = title
+                                    
+                                new_comment_user = movie_name +":"+a_comment[1]
+                                old_comment_user = title_up+":"+a_comment[1]
+
+                                if old_comment_user in comments_list_user:
+                                    comments_list_user.pop(old_comment_user)
+
+                                if new_comment_user not in comments_list_user:
+                                    comments_list_user.append(new_comment_user)
+
+                            user = users.update_one({"email":user1},
+                            {"$set":
+                                    {"comments":comments_list_user}})
     
     
 @app.route('/delete_comment')
@@ -921,7 +1215,10 @@ def delete_comment():
 
 @app.route('/delete_comment', methods=['POST'])
 def delete_comment_post(): 
-    if users.find({"email":login_email,"category":"admin"}).count() >= 1:
+    global login_name
+    global login_email
+
+    if login_name == "admin":
         try:
             title = request.form['title']
             user_email = request.form['user']
@@ -932,6 +1229,7 @@ def delete_comment_post():
                 return "You must fill both fields"
         else:
             if movies.find({"title":title}).count() == 0:
+               
                return render_template('delete_comment.html',login = login_name , status = "movie_not_found")
             if users.find({"email":user_email}).count() == 0:
                 return render_template('delete_comment.html',login = login_name , status="user_not_found")
@@ -979,7 +1277,7 @@ def delete_comment_post():
                     return render_template('delete_comment.html',login = login_name , status = "error")
 
     
-    elif users.find({"email":login_email,"category":"user"}).count() >= 1:
+    elif login_name == "user":
         try:
             title = request.form['title']
             
@@ -1042,30 +1340,7 @@ def delete_comment_post():
                     return "An error has occured!"
     
     else:
-        return "Login to delete your comments!"
-            
-            
-    
-           
-@app.route('/user_add', methods=['POST'])
-def user_add():
-    
-    data = None 
-    try:
-        data = json.loads(request.data)
-    except Exception as e:
-        return Response("bad json content",status=401,mimetype='application/json')
-    if data == None:
-        return Response("bad request",status=400,mimetype='application/json')
-    if not "email" in data or not "password" in data:
-        return Response("Information incompleted",status=500,mimetype="application/json")
-    
-    if users.find({"email":data["email"]}).count() == 0 :
-        user = {"email": data['email'], "name": data['name'],  "password":data['password']}
-        users.insert(user)
-        return Response("was added to the MongoDB",status=200,mimetype='application/json') 
-    else:
-            return Response("was NOT added to the MongoDB",status=200,mimetype='application/json') 
+        return render_template('delete_comment.html',login = login_name )
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

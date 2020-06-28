@@ -14,12 +14,25 @@
     <p>
 		<input type="text" name="email" placeholder="email of user" required="required" />
        </p>
+       <button type="submit" class="btn btn-primary btn-block btn-large">Delete</button>
 </form>
+
 {% elif login == "user": %}
-<h4 style="color:red;">Only admin can delete users!</h4>
+<h4>
+Are you sure you want to delete your account?
+</h4>
+<form method="post">
+    <p>
+		<input type="text" name="response" placeholder="yes or no" required="required" />
+       </p>
+       <button type="submit" class="btn btn-primary btn-block btn-large">OK</button>
+</form>
+
 {% elif login == "none": %}
 <h4 style="color:red;">You must login to delete users!</h4>
-
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 </h2>
 
@@ -27,6 +40,11 @@
 {% if status == "success": %}
 <h4 style="color:green;">
 User deleted successfully!!
+</h4>
+{% elif status == "deleted": %}
+<h4 style="color:green;">
+Account deleted successfully!!
+ 
 </h4>
 {% elif status == "user_not_found": %}
 

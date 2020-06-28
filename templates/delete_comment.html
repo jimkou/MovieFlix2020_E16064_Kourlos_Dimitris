@@ -41,6 +41,9 @@
 {% elif login == "none": %}
 
 <h4 style="color:red;">You must login to delete comments!</h4>
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 
 </h2 >
@@ -59,7 +62,7 @@ Movie not found!
 <h4 style="color:red;">
 User with given email not found!
 </h4>
-{% elif status == "success": %}user
+{% elif status == "success": %}
 <h4 style="color:green;">
 Movie comment deleted successfully!
 </h4>

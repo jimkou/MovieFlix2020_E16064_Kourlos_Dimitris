@@ -43,6 +43,13 @@
 <h4 style="color:red;">
     An error has occured!
 </h4>
+{% elif status == "movie_exists": %}
+<h4 style="color:red;">
+    This movie already exists with the same year.
+</h4>
+<h4 style="color:red;">
+    Try a different Year or Title!
+</h4>
 {% endif %}
 {% elif login == "user": %}
 <h4 style="color:red;">
@@ -54,6 +61,10 @@
     You are not logged in!
     Login as admin to insert a movie!
 </h4>
+	</h4>
+    <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 </h2>
 

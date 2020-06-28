@@ -1,4 +1,15 @@
 <body style="background-color:silver;text-align:center;">
+
+<style>
+div.one {
+  
+  text-align: left;  
+  border-style: solid;
+  background-color: #ff9999;
+ 
+}
+</style>
+
    <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
   color: white;
   padding: 14px 25px;
@@ -8,10 +19,31 @@
 
 <h3>See all comments</h3>
 
+{% if status == "comments_found": %}
+<h4>
+User : {{user}} 
+</h4>
+<h4>
+
+</h4>
+
+<div class="one">
+Comments
+</div>
+
+{% for i in output %}
+<div class="one">
+<p> {{i}}
+    </p>
+    </div>
+{% endfor %}
+
+{% else %}
+
 <h2>
 {% if status == "admin": %}
 	<h4 style="color:red;"> 
-    admin
+ 
 
 <form method="post">
     <p>
@@ -29,7 +61,12 @@
 {% elif status == "not_found": %}
 	<h4 style="color:red;"> 
   User not found!
-   
+ 
+	</h4>
+{% elif status == "comments_not_found": %}
+	<h4 style="color:red;"> 
+ Comments did not found!
+ 
 	</h4>
 {% elif status == "user": %}
 	<h4 style="color:red;"> 
@@ -44,7 +81,10 @@
 <h4 style="color:red;">
   Login to see all your comments!
 </h4>	
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 
 </h2>
-
+{% endif %}

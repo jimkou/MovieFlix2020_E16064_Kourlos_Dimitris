@@ -24,6 +24,9 @@
   You must login to rate a movie!
 
 </h4>
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 {% if status == "success": %}
 <h4 style="color:green;">
@@ -34,6 +37,10 @@ Movie rated succefully!
 Movie not found!
 </h4>
 {% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% elif status == "many_movies": %}
 <h4 style="color:red;">
 An error has occured!
 </h4>

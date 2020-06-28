@@ -37,6 +37,9 @@
 {% elif login == "none": %}
 
 <h4 style="color:red;">You must login to delete rating!</h4>
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
 {% endif %}
 
 </h2 >
@@ -53,7 +56,7 @@ Movie not found
 </h4>
 {% elif status == "success": %}
 <h4 style="color:green;">
-Movie comment deleted successfully!
+Movie rating deleted successfully!
 </h4>
 {% endif %}
 </h2>
