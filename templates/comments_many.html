@@ -1,0 +1,107 @@
+<body style="background-color:silver;text-align:center;">
+
+<style>
+div.one {
+  
+  text-align: left;  
+  border-style: solid;
+  background-color: #ff9999;
+ 
+}
+
+div.two {
+  
+  text-align: left;  
+  border-style: solid;
+  
+  background-color: #010101;
+  color: #fcfcfc;
+ 
+}
+</style>
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+  
+  
+<h2>
+<h3>See Movie Comments</h3>
+{% if status == "comments_found": %}
+<h4>
+Movie : {{title}} 
+</h4>
+<h4>
+Year : {{year}}
+</h4>
+
+<div class="one">
+Comments
+</div>
+
+{% for i in output %}
+<div class="one">
+<p> {{i}}
+    </p>
+    </div>
+{% endfor %}
+
+{% else %}
+
+  {% if login == "admin" : %}
+<form method="post">
+    <p>
+       <input type="text" name="title" placeholder="Title of Movie" required="required" />
+       </p>
+             <p>
+<input type="number" name="year" placeholder="year" min="1900" max="2021" required="required" />
+       
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+{% elif login == "user": %}
+<h4>
+<form method="post">
+    <p>
+       <input type="text" name="title" placeholder="Title of Movie" required="required" />
+       </p>
+       <p>
+ <input type="number" name="year" placeholder="year" min="1900" max="2021"  required="required" />
+       
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
+</form>
+</h4>
+
+{% elif login == "none": %}
+<h4 style="color:red;">
+You must login to see comments!
+</h4>
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
+{% endif %}
+
+</h2>
+<h2>
+{% if status == "movie_not_found": %}
+	<h4 style="color:red;"> 
+    Movie not found
+	
+	</h4>
+
+        
+{% elif status == "error": %}
+<h4 style="color:red;">
+    An error has occured
+    </h4>
+    {% elif status == "comments_not_found": %}
+    <h4 style="color:red;">
+    No comments found
+    </h4>
+{% endif %}
+{% endif %}
+</h2>
+

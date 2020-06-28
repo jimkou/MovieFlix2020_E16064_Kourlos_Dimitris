@@ -1,0 +1,65 @@
+<body style="background-color:silver;text-align:center;">
+   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;">MovieFLIX
+
+{% if login != "none": %}
+<h3>Rate Movie</h3>
+
+<h2>
+{% if status == "type_year": %}
+<h4 style="color:red;">
+  Two or more movies exist with the same Title
+</h4>
+<h4 style="color:red;">
+  Type the year of the Movie too.
+</h4>
+{% endif %}
+<form method="post">
+   <p>
+		<input type="text" name="title" placeholder="movie title" required="required" />
+       </p>
+       <input type="number"  name="year" placeholder="movie year" required="required" min="1900" max="2021" />
+       <p>
+		<input type="number"  name="rating" placeholder="movie rating" required="required" min="1" max="10" />
+       </p>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Rate</button>
+</form>
+{% elif login == "none": %}
+<h4 style="color:red;">
+  You must login to rate a movie!
+
+</h4>
+ <form action="http://localhost:5000/user_login">
+    <input type="submit" value="Go to Login" />
+</form>
+{% endif %}
+{% if status == "success": %}
+<h4 style="color:green;">
+Movie rated succefully!
+</h4>
+{% elif status == "movie_not_found": %}
+<h4 style="color:red;">
+Movie not found!
+</h4>
+{% elif status == "error": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% elif status == "many_movies": %}
+<h4 style="color:red;">
+An error has occured!
+</h4>
+{% elif status == "already_rated": %}
+<h4 style="color:red;">
+You have already rate the movie before! 
+</h4>
+<h4 style="color:red;">
+Delete your previous rating and try again.
+</h4>
+{% endif %}
+</h2>
+</body>
