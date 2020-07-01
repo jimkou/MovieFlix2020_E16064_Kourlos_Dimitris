@@ -81,6 +81,7 @@ body {
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
+    <a href="all_movies">All Movies</a>
       <a href="insert_movie">Insert Movie</a>
       <a href="search_movie">Search Movie</a>
       <a href="movie_info">Movie Information</a>
@@ -135,16 +136,58 @@ body {
   <a href="user_login">Login</a>
   <a href="user_register">Register</a>
 </div>
-{% elif login == "user"%}
 
-<body style="background-color:silver;text-align:center;">
-   <h1 style="background-color:p;text-align:center;font-family:courier; background-color: #f44336;
-  color: white;
-  padding: 14px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;">Welcome To MovieFLIX
+
+
+{% elif login == "user"%}
+<div class="navbar">
+  <div class="dropdown">
+    <button class="dropbtn">Movie
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+    <a href="all_movies">All Movies</a>
+      <a href="search_movie">Search Movie</a>
+      <a href="movie_info">Movie Information</a>
+    </div>
+  </div> 
+
+<div class="dropdown">
+    <button class="dropbtn">Comments
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="make_comment">Make Comment</a>
+      <a href="all_comments">All Comments</a>
+      
+       <a href="delete_comment">Delete Comment</a>
+    </div>
+  </div> 
+  
+  
+  <div class="dropdown">
+    <button class="dropbtn">Ratings
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="rate_movie">Rate Movie</a>
+      <a href="ratings">My Ratings</a>
+      
+       <a href="delete_rating">Delete Rating</a>
+       </div>
+  </div> 
+  
+  <div class="dropdown">
+    <button class="dropbtn">User
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="delete_user">Delete Account</a>       
+       </div>
+  </div>
+  <a href="user_logout">Logout</a> 
  
+</div> 
 {% endif %}
 
 <body style="background-color:silver;text-align:center;">
