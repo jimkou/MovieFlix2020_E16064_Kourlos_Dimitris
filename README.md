@@ -10,7 +10,7 @@ $ cd MovieFlix2020_E16064_Kourlos_Dimitris
 $ sudo docker-compose up
 ```
 #### IMPORTANT NOTES:
-> The application works only with 1 loggin session. So it handles only one user at the time with the variables login_name and login_email.
+> The application works only with 1 login session. So it handles only one user at the time with the variables login_name and login_email.
 
 #### OPERATIONS
 - User Registration 
