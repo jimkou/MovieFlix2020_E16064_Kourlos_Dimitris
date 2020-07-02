@@ -96,7 +96,8 @@ body {
     </button>
     <div class="dropdown-content">
       <a href="make_comment">Make Comment</a>
-      <a href="all_comments">All Comments</a>
+      <a href="all_comments">All User Comments</a>
+      <a href="comments">Movie Comments</a>
       
        <a href="delete_comment">Delete Comment</a>
     </div>
@@ -158,8 +159,8 @@ body {
     </button>
     <div class="dropdown-content">
       <a href="make_comment">Make Comment</a>
-      <a href="all_comments">All Comments</a>
-      
+      <a href="all_comments">My Comments</a>
+      <a href="comments">Movie Comments</a>
        <a href="delete_comment">Delete Comment</a>
     </div>
   </div> 
@@ -243,6 +244,9 @@ Comments
     <p>
        <input type="text" name="title" placeholder="Title of Movie" required="required" />
        </p>
+       <p>
+       <input type="number" name="year" placeholder="Year of Movie" min="1900" max="2021" required="required" />
+       </p>
         <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
 </form>
 {% elif login == "user": %}
@@ -250,6 +254,9 @@ Comments
 <form method="post">
     <p>
        <input type="text" name="title" placeholder="Title of Movie" required="required" />
+       </p>
+       <p>
+       <input type="number" name="year" placeholder="Year of Movie" min="1900" max="2021" required="required" />
        </p>
         <button type="submit" class="btn btn-primary btn-block btn-large">Search</button>
 </form>
@@ -277,7 +284,7 @@ You must login to see comments!
 <h4 style="color:red;">
     An error has occured
     </h4>
-    {% elif status == "comments_not_found": %}
+{% elif status == "comments_not_found": %}
     <h4 style="color:red;">
     No comments found
     </h4>

@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, redirect, Response , render_template
 import json
 
 
-client = MongoClient('mongodb://db:27017/')
+client = MongoClient('mongodb://localhost:27017/')
 
 
 db = client['MovieFlix']
@@ -65,7 +65,7 @@ def user_logout():
     global login_email
     login_name = "none"
     login_email = "none"   
-    return redirect("/")     
+    return redirect("/user_login")     
 #LOGIN 
 @app.route('/user_login')
 def user_login():
@@ -368,33 +368,32 @@ def comments_post():
     
     try:
         title = request.form['title']
+        title = title.strip()
+
+        year = request.form['year']
       
     except Exception as e:
-         return render_template('comments.html',status='error')
+         return render_template('comments.html',login = login_name , status='error')
          
     if title == "":
         return "Please type a movie."
     
+    if movies.find({"title":title , "year":str(year)}).count == 0:
+        return  render_template('comments.html',login = login_name ,status="not_found")
+
     moviez = movies.find({})    
     counter  = 0
     for movie in moviez:
-        if title.casefold().strip() == movie['title'].casefold().strip():
+        if title.casefold().strip() == movie['title'].casefold().strip() and year == movie["year"]:
            counter  = counter + 1 
            for i in movie['comments']:
                 output.append(i)
             
-    if counter >= 2:
-           return redirect("http://localhost:5000/comments_many")  
-    
-  
-            
-    
-        
         
     if len(output) == 0:
-        return  render_template('comments.html',status="comments_not_found")
+        return  render_template('comments.html',login = login_name ,status="comments_not_found")
 
-    return  render_template('comments.html',status="comments_found",output = output , title = title)
+    return  render_template('comments.html',login = login_name , status="comments_found",output = output , title = title)
         
 @app.route('/all_comments')
 def all_comments():
@@ -489,7 +488,7 @@ def delete_rating_post():
             rating = "0"
             
         except Exception as e:
-                 return render_template('delete_rating.html',login = login_name , status = "user_not_found")
+                 return render_template('delete_rating.html',login = login_name , status = "error")
         if title == "" or rating == "" or user_email == "":
                 return "You must fill both fields"
         else:
@@ -975,7 +974,9 @@ def remove_comments_ratings(title , year):
                 for rating in user1["rating"]:
                     a_rating = rating.split(":")
                     user_rating = a_rating[0]+":"+a_rating[1]
-                    if movie_rating.casefold().strip() != user_rating.casefold().strip():
+                    print("movie is ",movie_rating )
+                    print("user_rating is ", user_rating)
+                    if movie_rating != user_rating:
                         ratings_list.append(rating)
 
                 user = users.update_one({"email":user}, 
