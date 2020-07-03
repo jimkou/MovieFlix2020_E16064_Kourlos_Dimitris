@@ -32,24 +32,26 @@ $ sudo docker-compose up
   - Type the movie title you want to search for(Same as movie_search but comments and ratings wont return)
 - Comments of a movie
   - Navigate to http://localhost:5000/comments
-  - Type the movie title you want and the page will appear all the comments of the movie
-     > In case of 2 or more movies with the same title , you will be redirected to the url (http://localhost:5000/comments_many) where you will type the title and the year of the movie also.
+  - Type the movie title and movie year you want and the page will appear all the comments of the movie
+     
 - Rate a movie
   - Navigate to http://localhost:5000/rate_movie
   - Fill the following fields
     *  Title of the Movie
+    *  Year of the Movie
     *  Rating
     > You can only rate a movie once. If you want to change your rating you must delete the current rating and then make a new.
  - Delete a movie rating
     - Navigate to http://localhost:5000/delete_rating
     - If you are logged in as a simple User:
-        * Type the title of the Movie that you want your ratings to be deleted from
+        * Type the title and the year of the Movie that you want your ratings to be deleted from
     - If you are logged in as Administrator:
-        * Type the user email and the movie title that you want to delete user ratings at the particular movie.
+        * Type the user email and the movie title and year that you want to delete user ratings at the particular movie.
         > As a admin if you want to delete your rating in a movie you just type your email instead of a user's email.
 - Make a comment
     - Navigate to http://localhost:5000/make_comment
         * Type movie title you want to comment to
+        * Type the movie year 
         * Type the comment
         > If you type the same comment at the same movie more than once , then comment is not gone to be made again.
 - See all your comments 
@@ -67,11 +69,11 @@ $ sudo docker-compose up
 - Delete a comment
     - Navigate to http://localhost:5000/delete_comment
     - if you are a simple User:
-        * Type movie title you want to delete your comment from
+        * Type movie title and year you want to delete your comment from
         * Type the comment for deletion
     - If you are Administrator:
         * Type email of user or your email
-        * Type movie title you want to delete your comment from
+        * Type movie title and year you want to delete your comment from
         *  Type the comment for deletion
 - Delete an account
     - Navigate to http://localhost:5000/delete_user
@@ -102,14 +104,15 @@ $ sudo docker-compose up
         * Title
         * Year
         * Desciption
-        * Actors
-        * Rating
-        * Comments
+        * Actors insert
+        * Actors delete
+        > You can insert one actor here and delete 1 actor at the same time.
 - Delete a comment 
     - Navigate to http://localhost:5000/delete_comment
     - Fill the following fields:
         * Email of user
         * Title of Movie
+        * Year of the Movie
         * The comment for deletion
 - Upgrade a User 
     - Navigate to http://localhost:5000/upgrade_user
