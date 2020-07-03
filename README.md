@@ -13,6 +13,7 @@ $ sudo docker-compose up
 > The application works only with 1 login session. So it handles only one user at the time with the variables login_name and login_email.
 
 #### OPERATIONS
+> Important Note: Database is initialzed with an admin account by default. Email: admin , Name : admin , Password : admin
 - User Registration 
   - Navigate to http://localhost:5000/user_register 
   - Type your email , username and password and press the register button
