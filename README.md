@@ -1,12 +1,12 @@
-# MovieFlix2020_E16064_Kourlos_Dimitris
+# MovieFlix_Project
 Flask application with mongoDB
 
 #### HOW TO RUN:
 >Make sure you have docker and docker-compose installed correctly on your computer.
 >git clone the repository , cd into it and then type docker-compose up
 ```sh
-$ git clone https://github.com/jimkou/MovieFlix2020_E16064_Kourlos_Dimitris.git
-$ cd MovieFlix2020_E16064_Kourlos_Dimitris
+$ git clone https://github.com/jimkou/MovieFlix_Project.git
+$ cd https://github.com/jimkou/MovieFlix_Project.git
 $ sudo docker-compose up
 ```
 #### IMPORTANT NOTES:
