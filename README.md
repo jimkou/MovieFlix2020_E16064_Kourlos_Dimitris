@@ -6,7 +6,7 @@ Flask application with mongoDB
 >git clone the repository , cd into it and then type docker-compose up
 ```sh
 $ git clone https://github.com/jimkou/MovieFlix_Project.git
-$ cd https://github.com/jimkou/MovieFlix_Project.git
+$ cd https://github.com/jimkou/MovieFlix_Project
 $ sudo docker-compose up
 ```
 #### IMPORTANT NOTES:
